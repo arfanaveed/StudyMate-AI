@@ -14,7 +14,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -152,10 +154,10 @@ fun ChatScreen(
                     ) {
                         // Quick Prompt Pills
                         val promptPills = listOf(
-                            "Explain Calculus Derivatives simply",
-                            "Summarize key Cell Biology concepts",
-                            "Big-O notation examples in Python",
-                            "How to structure a research essay"
+                            "Math: Explain Calculus Derivatives step-by-step",
+                            "Biology: Photosynthesis light reaction pathway",
+                            "CS: Big-O time complexity and recursion",
+                            "History: Primary causes of World War I"
                         )
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -318,39 +320,126 @@ fun ChatScreen(
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Filled.Psychology,
-                                    contentDescription = null,
-                                    tint = PrimaryBlue,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Paste Study Notes or Lecture Transcript",
-                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-                                )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Psychology,
+                                        contentDescription = null,
+                                        tint = PrimaryBlue,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Paste Notes or Lecture Transcript",
+                                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+                                    )
+                                }
+
+                                if (noteInputText.isNotEmpty()) {
+                                    Text(
+                                        text = "${noteInputText.length} chars",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    )
+                                }
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            // Action Toolbar for Paste & Clear
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        val clipText = clipboardManager.getText()?.text
+                                        if (!clipText.isNullOrBlank()) {
+                                            noteInputText = clipText
+                                            snackbarMessage = "Pasted ${clipText.length} characters from clipboard!"
+                                        } else {
+                                            snackbarMessage = "Clipboard is empty!"
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .testTag("paste_clipboard_button"),
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ContentPaste,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("Paste Clipboard", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
+
+                                OutlinedButton(
+                                    onClick = {
+                                        noteInputText = """
+                                            MIT Lecture 12: Neural Networks & Deep Learning Overview
+                                            Neural networks are computational models inspired by biological brain structures. A perceptron computes a weighted sum of inputs: z = w1*x1 + w2*x2 + b, then passes z through an activation function like ReLU f(z) = max(0, z) or Sigmoid sigma(z) = 1/(1+e^-z).
+                                            Backpropagation calculates the gradient of the loss function with respect to each weight using the multivariable chain rule. Gradient Descent then updates weights: w = w - alpha * dL/dw.
+                                            Overfitting occurs when a model memorizes training noise rather than learning generalizable patterns. Mitigations include L2 regularization (weight decay), Dropout (randomly zeroing neurons during training), and early stopping.
+                                        """.trimIndent()
+                                        snackbarMessage = "Loaded sample MIT lecture notes!"
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    modifier = Modifier.testTag("paste_sample_notes_button"),
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                                ) {
+                                    Text("Sample Notes", fontSize = 12.sp)
+                                }
+
+                                if (noteInputText.isNotBlank()) {
+                                    IconButton(
+                                        onClick = { noteInputText = "" },
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .testTag("clear_notes_button")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Clear,
+                                            contentDescription = "Clear text",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
                             OutlinedTextField(
                                 value = noteInputText,
                                 onValueChange = { noteInputText = it },
                                 placeholder = {
-                                    Text("Paste your study notes, textbook excerpt, or lecture transcript here...")
+                                    Text("Paste your long study notes, textbook chapter, or lecture transcript here...")
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(180.dp)
+                                    .height(200.dp)
                                     .testTag("notes_input_text_field"),
-                                shape = RoundedCornerShape(12.dp)
+                                shape = RoundedCornerShape(12.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = PrimaryBlue
+                                )
                             )
+
                             Spacer(modifier = Modifier.height(12.dp))
+
                             Button(
                                 onClick = {
                                     if (noteInputText.isNotBlank()) {
                                         onSendMessage(noteInputText, true)
                                         noteInputText = ""
-                                        selectedTab = 0 // Jump back to chat to view summary
+                                        selectedTab = 0 // Jump back to chat to view structured summary
                                     }
                                 },
                                 modifier = Modifier
@@ -375,7 +464,7 @@ fun ChatScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "💡 Summarizer Tips",
+                        text = "💡 Summarizer Capabilities",
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -386,9 +475,9 @@ fun ChatScreen(
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
-                                text = "• Paste full lecture paragraphs for executive summaries\n" +
-                                        "• AI automatically extracts core concepts, formulas, and memory tips\n" +
-                                        "• Summaries are saved automatically to your chat history for quick review",
+                                text = "• Supports long lecture transcripts, textbook excerpts & articles\n" +
+                                        "• AI generates 📌 Executive Summaries, 💡 Core Definitions & 🎯 Exam Takeaways\n" +
+                                        "• Summaries automatically save to your chat timeline for quick revision",
                                 style = MaterialTheme.typography.bodySmall.copy(
                                     color = PrimaryBlue,
                                     lineHeight = 18.sp
