@@ -1,6 +1,6 @@
 #  StudyMate – AI Study Assistant
 ## Live Demo 
-**Live App:** (Paste your live app URL here) 
+**Live App:** (https://ai.studio/apps/bcc72e11-5dd5-464d-b0be-99785319a28c) 
 ##  About the Project
 StudyMate is an AI-powered study assistant designed to help university students learn more efficiently. It provides AI-assisted learning tools, including note summarization, concept explanation, quiz generation, study planning, and assignment management, all in a single application.
 ##  Problem Statement
@@ -36,10 +36,15 @@ The AI can:
 - GitHub
 ## Screenshots   
  ### Home Screen
-![Home Screen](images/home.png)
+![Home Screen](Screenshot_20260727-183529.png)
+ ### Student Profile and streak 
+![Student Profile & Streak](Screenshot_20260727-183832.png)
+ ### AI Quiz Generator
+![Quiz](Screenshot_20260727-183622.png)
  ### AI Assistant
-![AI Assistant](images/chat.png)
- ### AI Summarizer
+![AI Assistant](Screenshot_20260727-183308.png)
+ ### AI Assistant
+![Study Planner](Screenshot_20260727-183807.png)
 
 ## How to Run
 1. Open the live application.
