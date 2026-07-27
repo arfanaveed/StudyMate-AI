@@ -43,7 +43,7 @@ The AI can:
 ![Quiz](Screenshot_20260727-183622.png)
  ### AI Assistant
 ![AI Assistant](Screenshot_20260727-183308.png)
- ### AI Assistant
+ ### Study Planner
 ![Study Planner](Screenshot_20260727-183807.png)
 
 ## How to Run
